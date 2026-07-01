@@ -1,0 +1,39 @@
+# Build outputs
+*.o
+*.elf
+*.bin
+*.map
+*.hex
+*.img
+*.wic
+*.tar
+*.tar.gz
+*.zip
+
+# Local binaries
+linux-apps/*/*-gateway
+linux-apps/*/stm32car-gateway
+
+# Yocto build artifacts
+yocto/openstlinux/build*/
+yocto/openstlinux/downloads/
+yocto/openstlinux/sstate-cache/
+yocto/openstlinux/tmp*/
+yocto/openstlinux/cache/
+
+# Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs
+*.log
+
+# Python
+__pycache__/
+*.pyc
+
+# OS files
+.DS_Store
+Thumbs.db
