@@ -12,11 +12,16 @@ CFLAGS += $(PKG_CFLAGS)
 
 LDLIBS += $(PKG_LIBS)
 
+ifeq ($(UDP_SOCKET_ENABLED),1)
+CPPFLAGS += -DUDP_SOCKET_ENABLED
+endif
+
 SRCS := \
 	src/main.c \
 	src/gateway_command_handler.c \
 	src/m33_transport.c \
-	src/ble_gatt_server.c
+	src/ble_gatt_server.c \
+	src/udp_socket_client.c
 
 OBJS := $(SRCS:.c=.o)
 

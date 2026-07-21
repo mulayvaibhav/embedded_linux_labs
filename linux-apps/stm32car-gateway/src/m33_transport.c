@@ -5,37 +5,38 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdint.h>
+#include <arpa/inet.h>
+#include <sys/socket.h>
 
 #include "vehicle_command.h"
 #include "vehicle_ipc_wire.h"
 
+#include "udp_socket_client.h"
+
 #define M33_RPMSG_CMD_DEV "/dev/rpmsg0"
 #define M33_ACK_TIMEOUT_MS 200
 
-static vehicle_motion_command_wire_t to_wire_command(
-    const vehicle_motion_command_t *cmd)
+static void to_udp_wire_command(
+    const vehicle_motion_command_t *cmd,
+    vehicle_motion_command_wire_t  *wire)
 {
-    vehicle_motion_command_wire_t wire = {
-        .magic = VEHICLE_CMD_MAGIC,
-        .version = VEHICLE_WIRE_VERSION,
+    wire->magic   = htonl(VEHICLE_CMD_MAGIC);
+    wire->version = VEHICLE_WIRE_VERSION;
 
-        .source = (uint8_t)cmd->source,
-        .command_type = (uint8_t)cmd->command_type,
-        .control_mode = (uint8_t)cmd->control_mode,
+    wire->source = (uint8_t)cmd->source;
+    wire->command_type = (uint8_t)cmd->command_type;
+    wire->control_mode = (uint8_t)cmd->control_mode;
 
-        .linear_x = cmd->linear_x,
-        .angular_z = cmd->angular_z,
+    wire->linear_x  = (int16_t)htons(cmd->linear_x);
+    wire->angular_z = (int16_t)htons(cmd->angular_z);
 
-        .speed_limit_pct = cmd->speed_limit_pct,
-        .reserved0 = 0,
+    wire->speed_limit_pct = cmd->speed_limit_pct;
+    wire->reserved0 = 0;
 
-        .ttl_ms = cmd->ttl_ms,
+    wire->ttl_ms = htons(cmd->ttl_ms);
 
-        .sequence_id = cmd->sequence_id,
-        .timestamp_ms = cmd->timestamp_ms,
-    };
-
-    return wire;
+    wire->sequence_id = htonl(cmd->sequence_id);
+    wire->timestamp_ms = htonl(cmd->timestamp_ms);
 }
 
 int m33_transport_send_vehicle_command(const vehicle_motion_command_t *cmd)
@@ -44,8 +45,16 @@ int m33_transport_send_vehicle_command(const vehicle_motion_command_t *cmd)
         return -1;
     }
 
-    vehicle_motion_command_wire_t wire = to_wire_command(cmd);
+    vehicle_motion_command_wire_t wire = {0};
+    
+    to_udp_wire_command(cmd, &wire);
 
+    printf("m33_transport_send_vehicle_command: Send over -> ");
+#ifdef UDP_SOCKET_ENABLED
+    printf("UDP \n");
+    udp_send( &wire );
+#else 
+    printf("RpMsg \n");
     int fd = open(M33_RPMSG_CMD_DEV, O_RDWR | O_CLOEXEC | O_NONBLOCK);
     if (fd < 0) {
         fprintf(stderr, "open(%s) failed: %s\n",
@@ -119,7 +128,7 @@ int m33_transport_send_vehicle_command(const vehicle_motion_command_t *cmd)
                 ack.sequence_id, ack.status, ack.error_code);
         return -1;
     }
-
+#endif
     return 0;
 }
 

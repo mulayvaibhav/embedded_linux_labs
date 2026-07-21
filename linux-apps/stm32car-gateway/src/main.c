@@ -1,6 +1,7 @@
 #include "gateway_command_handler.h"
 #include "m33_transport.h"
 #include "ble_gatt_server.h"
+#include "udp_socket_client.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -31,6 +32,8 @@ int main(void)
      * BLE and stdin should both use gateway_handle_command_text().
      */
     char line[64];
+
+    udp_socket_init();
 
     while (1) {
         printf("gateway> ");

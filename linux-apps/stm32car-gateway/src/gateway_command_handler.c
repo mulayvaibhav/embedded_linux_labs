@@ -64,8 +64,8 @@ static void fill_common(vehicle_motion_command_t *cmd,
     cmd->version = VEHICLE_COMMAND_VERSION;
     cmd->source = source;
     cmd->control_mode = VEHICLE_MODE_MANUAL;
-    cmd->speed_limit_pct = 25;
-    cmd->ttl_ms = 500;
+    cmd->speed_limit_pct = 40;
+    cmd->ttl_ms = 400;
     cmd->timestamp_ms = monotonic_ms();
 }
 
@@ -94,7 +94,7 @@ int gateway_handle_command_text(const char *input,
         strcmp(normalized, "up") == 0) {
 
         cmd.command_type = VEHICLE_CMD_MOTION;
-        cmd.linear_x = 600;
+        cmd.linear_x = 1000;
         cmd.angular_z = 0;
 
     } else if (strcmp(normalized, "backward") == 0 ||
@@ -103,20 +103,20 @@ int gateway_handle_command_text(const char *input,
                strcmp(normalized, "down") == 0) {
 
         cmd.command_type = VEHICLE_CMD_MOTION;
-        cmd.linear_x = -600;
+        cmd.linear_x = -1000;
         cmd.angular_z = 0;
 
     } else if (strcmp(normalized, "left") == 0) {
 
         cmd.command_type = VEHICLE_CMD_MOTION;
         cmd.linear_x = 300;
-        cmd.angular_z = 600;
+        cmd.angular_z = 1000;
 
     } else if (strcmp(normalized, "right") == 0) {
 
         cmd.command_type = VEHICLE_CMD_MOTION;
         cmd.linear_x = 300;
-        cmd.angular_z = -600;
+        cmd.angular_z = -1000;
 
     } else if (strcmp(normalized, "stop") == 0 ||
                strcmp(normalized, "center") == 0 ||
