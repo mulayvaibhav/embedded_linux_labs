@@ -12,6 +12,7 @@
 #include "vehicle_ipc_wire.h"
 
 #include "udp_socket_client.h"
+#include "uart_serial_com.h"
 
 #define M33_RPMSG_CMD_DEV "/dev/rpmsg0"
 #define M33_ACK_TIMEOUT_MS 200
@@ -46,14 +47,15 @@ int m33_transport_send_vehicle_command(const vehicle_motion_command_t *cmd)
     }
 
     vehicle_motion_command_wire_t wire = {0};
-    
     to_udp_wire_command(cmd, &wire);
-
     printf("m33_transport_send_vehicle_command: Send over -> ");
 #ifdef UDP_SOCKET_ENABLED
     printf("UDP \n");
     udp_send( &wire );
-#else 
+#elif defined UART_COM_ENABLED
+    printf("UART COM Emabled \n");
+    uart_serial_com_send( &wire );
+#else
     printf("RpMsg \n");
     int fd = open(M33_RPMSG_CMD_DEV, O_RDWR | O_CLOEXEC | O_NONBLOCK);
     if (fd < 0) {

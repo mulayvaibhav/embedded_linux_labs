@@ -16,12 +16,17 @@ ifeq ($(UDP_SOCKET_ENABLED),1)
 CPPFLAGS += -DUDP_SOCKET_ENABLED
 endif
 
+ifeq ($(UART_COM_ENABLED),1)
+CPPFLAGS += -DUART_COM_ENABLED
+endif
+
 SRCS := \
 	src/main.c \
 	src/gateway_command_handler.c \
 	src/m33_transport.c \
 	src/ble_gatt_server.c \
-	src/udp_socket_client.c
+	src/udp_socket_client.c \
+	src/uart_serial_com.c
 
 OBJS := $(SRCS:.c=.o)
 

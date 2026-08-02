@@ -2,6 +2,7 @@
 #include "m33_transport.h"
 #include "ble_gatt_server.h"
 #include "udp_socket_client.h"
+#include "uart_serial_com.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -34,6 +35,14 @@ int main(void)
     char line[64];
 
     udp_socket_init();
+
+    const char *usart_port_6 = "/dev/ttySTM1";
+    int usart_fd = uart_serial_com_init(usart_port_6);
+    if ( usart_fd < 0 ) {
+        printf("FAILED to initialize USART_6.\n");
+        return 1;
+    }
+    printf("USART_6 initialized successfully.\n");
 
     while (1) {
         printf("gateway> ");
