@@ -1,0 +1,11 @@
+--- a/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
++++ b/arch/arm64/boot/dts/st/stm32mp257f-dk.dts
+@@ -887,7 +887,7 @@
+ 	pinctrl-1 = <&usart6_idle_pins_a>;
+ 	pinctrl-2 = <&usart6_sleep_pins_a>;
+ 	uart-has-rtscts;
+-	status = "disabled";
++	status = "okay";
+ };
+ 
+ &usb2_phy1 {

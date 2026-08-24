@@ -12,7 +12,7 @@
 
 # Local binaries
 linux-apps/*/*-gateway
-linux-apps/*/stm32car-gateway
+linux-apps/motor-control-gateway/build/*
 
 # Yocto build artifacts
 yocto/openstlinux/build*/

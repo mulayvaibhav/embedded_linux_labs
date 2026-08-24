@@ -1,0 +1,11 @@
+[Unit]
+Description=Motor Control Gateway
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/motor-control-gateway
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
